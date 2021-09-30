@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.dummyapp.R
 import com.example.libdummyapi.models.Data
 
-class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+class UserAdapter(private val interaction : (Data) -> Unit) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
     private var userList : ArrayList<Data> = ArrayList()
 
@@ -19,6 +19,9 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
     override fun onBindViewHolder(holder: UserAdapter.UserViewHolder, position: Int) {
         val userName = userList[position].firstName + " " + userList[position].lastName
         holder.userName.text = userName
+        holder.itemView.setOnClickListener {
+            interaction.invoke(userList[position])
+        }
     }
 
     override fun getItemCount(): Int {
