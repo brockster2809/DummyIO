@@ -5,7 +5,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class DummyServiceTests {
-    val api = ApiClient.api
+    private val api = ApiClient.api
 
     @Test
     fun `get user list working`()  = runBlocking {
