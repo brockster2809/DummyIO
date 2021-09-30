@@ -1,11 +1,10 @@
 package com.example.dummyapp.ui.list
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.dummyapp.R
+import com.example.dummyapp.databinding.ItemUserBinding
 import com.example.libdummyapi.models.Data
 
 class UserAdapter(private val interaction : (Data) -> Unit) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
@@ -33,14 +32,14 @@ class UserAdapter(private val interaction : (Data) -> Unit) : RecyclerView.Adapt
         userList.addAll(data)
     }
 
-    class UserViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
+    class UserViewHolder(binding : ItemUserBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        val userName : TextView = itemView.findViewById(R.id.user_name)
+        val userName : TextView = binding.userName
 
         companion object {
             fun create(parent : ViewGroup) : UserViewHolder {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
-                return UserViewHolder(view)
+                val binding = ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                return UserViewHolder(binding)
             }
         }
     }

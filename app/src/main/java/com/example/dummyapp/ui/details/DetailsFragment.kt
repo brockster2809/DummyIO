@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import com.example.dummyapp.R
 import com.example.dummyapp.HomeViewModel
+import com.example.dummyapp.databinding.DetailsFragmentBinding
 
 class DetailsFragment : Fragment() {
 
@@ -26,29 +27,26 @@ class DetailsFragment : Fragment() {
 
     }
 
+    private lateinit var binding : DetailsFragmentBinding
     private lateinit var viewModel: HomeViewModel
-    private lateinit var userDetailsTextView : TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.details_fragment, container, false)
-        userDetailsTextView = view.findViewById(R.id.user_details_name)
-        return view
+    ): View {
+        binding = DetailsFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(HomeViewModel::class.java)
 
         viewModel.userDetailsLD.observe(viewLifecycleOwner, Observer {
-            userDetailsTextView.text = it.firstName + " " + it.lastName //todo check this
+            binding.userDetailsName.text = "${it.firstName} ${it.lastName}" //todo check this
         })
 
         val userid = arguments?.getString(ARG_USER_ID,"")
         userid?.let { viewModel.fetchUserDetails(it) }
-
     }
-
 }

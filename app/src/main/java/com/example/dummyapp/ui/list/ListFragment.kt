@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dummyapp.HomeViewModel
 import com.example.dummyapp.R
+import com.example.dummyapp.databinding.ListFragmentBinding
 import com.example.libdummyapi.models.Data
 import java.lang.IllegalStateException
 
@@ -21,8 +22,8 @@ class ListFragment : Fragment() {
         fun newInstance() = ListFragment()
     }
 
+    private lateinit var binding : ListFragmentBinding
     private lateinit var viewModel: HomeViewModel
-    private lateinit var recyclerView : RecyclerView
     private var adapter : UserAdapter? = null
     private var interactor: ListFragmentInteractor? = null
 
@@ -39,20 +40,19 @@ class ListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view = inflater.inflate(R.layout.list_fragment, container, false)
-        recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
-        return view
+        binding = ListFragmentBinding.inflate(inflater,container, false)
+        return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity()).get(HomeViewModel::class.java)
         adapter = UserAdapter(interaction = {
             interactor?.selectUser(it)
         })
 
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(activity)
+        binding.recyclerView.adapter = adapter
 
         viewModel.userListLD.observe(viewLifecycleOwner, Observer {
             adapter?.setUserList(it)
