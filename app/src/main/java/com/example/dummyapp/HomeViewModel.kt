@@ -38,4 +38,15 @@ class HomeViewModel : ViewModel() {
             _userDetailsLD.postValue(repository.fetchUserDetails(userId))
         }
     }
+
+    fun onScrolled(totalItemCount: Int, visibleItemCount: Int, lastVisibleItemPosition: Int) {
+        val shouldFetchMore = visibleItemCount + lastVisibleItemPosition + THRESHOLD >= totalItemCount
+        if (shouldFetchMore) {
+            fetchUserList()
+        }
+    }
+
+    companion object {
+        const val THRESHOLD : Int = 5
+    }
 }

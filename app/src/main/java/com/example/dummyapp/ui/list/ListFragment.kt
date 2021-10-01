@@ -53,6 +53,15 @@ class ListFragment : Fragment() {
 
         binding.recyclerView.layoutManager = LinearLayoutManager(activity)
         binding.recyclerView.adapter = adapter
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val totalItemCount = recyclerView.layoutManager?.itemCount ?: 0
+                val visibleItemCount = recyclerView.layoutManager?.childCount ?: 0
+                val lastVisibleItemPosition = (recyclerView.layoutManager as? LinearLayoutManager)?.findLastVisibleItemPosition() ?: 0
+                viewModel.onScrolled(totalItemCount, visibleItemCount, lastVisibleItemPosition)
+            }
+        })
 
         viewModel.userListLD.observe(viewLifecycleOwner, Observer {
             adapter?.setUserList(it)

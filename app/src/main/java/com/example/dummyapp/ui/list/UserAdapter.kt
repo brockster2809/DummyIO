@@ -16,7 +16,7 @@ class UserAdapter(private val interaction : (Data) -> Unit) : RecyclerView.Adapt
     }
 
     override fun onBindViewHolder(holder: UserAdapter.UserViewHolder, position: Int) {
-        val userName = userList[position].firstName + " " + userList[position].lastName
+        val userName = position.toString() + " "  + userList[position].firstName + " " + userList[position].lastName
         holder.userName.text = userName
         holder.itemView.setOnClickListener {
             interaction.invoke(userList[position])
