@@ -1,22 +1,22 @@
 package com.example.dummyapp
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.libdummyapi.models.Data
+import androidx.lifecycle.*
+import com.example.dummyapp.db.User
 import com.example.libdummyapi.models.UserDetailsResponse
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class HomeViewModel : ViewModel() {
-    private val repository : HomeRepository = HomeRepository()
+class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
 
-    private val _userListLD = MutableLiveData<List<Data>>(emptyList())
+    private val exceptionHandler = CoroutineExceptionHandler { _, _ ->
+        //do nothing
+    }
+
     private val _userDetailsLD = MutableLiveData<UserDetailsResponse>()
 
-    val userListLD : LiveData<List<Data>>
-    get() = _userListLD
+    val userListLD : LiveData<List<User>>
+    get() = repository.getUserList()
     val userDetailsLD : LiveData<UserDetailsResponse>
     get() = _userDetailsLD
 
@@ -24,12 +24,9 @@ class HomeViewModel : ViewModel() {
         fetchUserList()
     }
 
-    fun fetchUserList() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val response = repository.fetchUserList()
-            response?.let {
-                _userListLD.postValue(it)
-            }
+    private fun fetchUserList() {
+        viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
+            repository.fetchUserList()
         }
     }
 
@@ -48,5 +45,11 @@ class HomeViewModel : ViewModel() {
 
     companion object {
         const val THRESHOLD : Int = 5
+    }
+}
+
+class HomeViewModelFactory(private val repository: HomeRepository) : ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return HomeViewModel(repository) as T
     }
 }

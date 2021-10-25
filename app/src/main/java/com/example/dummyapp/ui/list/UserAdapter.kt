@@ -5,11 +5,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dummyapp.databinding.ItemUserBinding
+import com.example.dummyapp.db.User
 import com.example.libdummyapi.models.Data
 
-class UserAdapter(private val interaction : (Data) -> Unit) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+class UserAdapter(private val interaction : (User) -> Unit) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
-    private var userList : ArrayList<Data> = ArrayList()
+    private var userList : ArrayList<User> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserAdapter.UserViewHolder {
         return UserViewHolder.create(parent)
@@ -27,7 +28,7 @@ class UserAdapter(private val interaction : (Data) -> Unit) : RecyclerView.Adapt
         return userList.size
     }
 
-    fun setUserList(data : List<Data>) {
+    fun setUserList(data : List<User>) {
         userList.clear()
         userList.addAll(data)
     }

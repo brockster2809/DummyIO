@@ -11,9 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dummyapp.HomeViewModel
-import com.example.dummyapp.R
 import com.example.dummyapp.databinding.ListFragmentBinding
-import com.example.libdummyapi.models.Data
+import com.example.dummyapp.db.User
 import java.lang.IllegalStateException
 
 class ListFragment : Fragment() {
@@ -75,7 +74,7 @@ class ListFragment : Fragment() {
     }
 
     interface ListFragmentInteractor {
-        fun selectUser(userData : Data)
+        fun selectUser(userData : User)
     }
 
 }

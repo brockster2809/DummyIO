@@ -1,24 +1,26 @@
 package com.example.dummyapp
 
-import android.util.Log
+import com.example.dummyapp.db.User
+import com.example.dummyapp.db.UserDao
 import com.example.libdummyapi.ApiClient
-import com.example.libdummyapi.models.Data
 import com.example.libdummyapi.models.UserDetailsResponse
 
-class HomeRepository {
+class HomeRepository(val userDao : UserDao) {
 
     private var currentPageNumber : Int = 0
-    private val cache : ArrayList<Data> = ArrayList()
+    private var isNetworkCallOngoing = false
 
-    suspend fun fetchUserList() : List<Data>? {
-        Log.d("ANSHUL DEBUG", "currentPageNumber ${currentPageNumber}")
+    fun getUserList() = userDao.getUsers()
+
+    suspend fun fetchUserList() {
+        if (isNetworkCallOngoing) return
+        isNetworkCallOngoing = true
         val response = ApiClient.api.getUserList(10,currentPageNumber)
-        response.body()?.let {
-            Log.d("ANSHUL DEBUG", "currentPageNumber ${currentPageNumber},limit ${it.limit}, page ${it.page}, total ${it.total}")
+        response.body()?.let { userListResponse ->
             currentPageNumber++
-            cache.addAll(it.data)
+            userDao.insertAll(userListResponse.data.map { User(it.id,it.firstName, it.lastName, it.picture, it.title) })
         }
-        return cache
+        isNetworkCallOngoing = false
     }
 
     suspend fun fetchUserDetails(userId : String) : UserDetailsResponse? {
