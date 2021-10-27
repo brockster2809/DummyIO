@@ -1,15 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="8dp"
     tools:context=".ui.details.DetailsFragment">
 
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/user_details_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/user_details_name"
-        tools:text="Hello" />
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_50_percent_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.50" />
+
+        <ImageView
+            android:id="@+id/user_details_image"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="@id/guideline_50_percent_horizontal"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/accessibility_user_details_image"/>
+
+        <TextView
+            android:id="@+id/user_details_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/address_header"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_details_image"
+            tools:text="Hello" />
+
+        <TextView
+            android:id="@+id/address_header"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/address_header"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/user_details_name"
+            app:layout_constraintTop_toTopOf="@id/user_details_name" />
+
+        <TextView
+            android:id="@+id/user_details_gender"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/user_details_name"
+            app:layout_constraintStart_toStartOf="@id/user_details_name"
+            app:layout_constraintTop_toBottomOf="@id/user_details_name"
+            tools:text="user_details_gender" />
+
+        <TextView
+            android:id="@+id/user_details_date_of_birth"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/user_details_name"
+            app:layout_constraintStart_toStartOf="@id/user_details_name"
+            app:layout_constraintTop_toBottomOf="@id/user_details_gender"
+            tools:text="user_details_date_of_birth" />
+
+        <TextView
+            android:id="@+id/user_details_register_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/user_details_name"
+            app:layout_constraintStart_toStartOf="@id/user_details_name"
+            app:layout_constraintTop_toBottomOf="@id/user_details_date_of_birth"
+            tools:text="user_details_register_date" />
+
+        <TextView
+            android:id="@+id/user_details_email"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/user_details_name"
+            app:layout_constraintStart_toStartOf="@id/user_details_name"
+            app:layout_constraintTop_toBottomOf="@id/user_details_register_date"
+            tools:text="user_details_email" />
+
+        <TextView
+            android:id="@+id/user_details_phone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/user_details_name"
+            app:layout_constraintStart_toStartOf="@id/user_details_name"
+            app:layout_constraintTop_toBottomOf="@id/user_details_email"
+            tools:text="user_details_phone" />
+
+        <TextView
+            android:id="@+id/user_details_state"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/address_header"
+            app:layout_constraintStart_toStartOf="@id/address_header"
+            app:layout_constraintTop_toBottomOf="@id/address_header"
+            tools:text="user_details_state" />
+
+        <TextView
+            android:id="@+id/user_details_street"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/address_header"
+            app:layout_constraintStart_toStartOf="@id/address_header"
+            app:layout_constraintTop_toBottomOf="@id/user_details_state"
+            tools:text="user_details_street" />
+
+        <TextView
+            android:id="@+id/user_details_city"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/address_header"
+            app:layout_constraintStart_toStartOf="@id/address_header"
+            app:layout_constraintTop_toBottomOf="@id/user_details_street"
+            tools:text="user_details_city" />
+
+        <TextView
+            android:id="@+id/user_details_country"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/address_header"
+            app:layout_constraintStart_toStartOf="@id/address_header"
+            app:layout_constraintTop_toBottomOf="@id/user_details_city"
+            tools:text="user_details_country" />
+
+        <TextView
+            android:id="@+id/user_details_timezone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/address_header"
+            app:layout_constraintStart_toStartOf="@id/address_header"
+            app:layout_constraintTop_toBottomOf="@id/user_details_country"
+            tools:text="user_details_timezone" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/user_details_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+    <TextView
+        android:id="@+id/user_details_message_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
 
 </FrameLayout>

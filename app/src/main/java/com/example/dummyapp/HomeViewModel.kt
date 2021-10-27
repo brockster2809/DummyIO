@@ -6,33 +6,56 @@ import com.example.libdummyapi.models.UserDetailsResponse
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 
 class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
 
-    private val exceptionHandler = CoroutineExceptionHandler { _, _ ->
-        //do nothing
+    private val userListExceptionHandler = CoroutineExceptionHandler { _, t ->
+        when (t) {
+            is UnknownHostException -> _userListLD.postValue(ResponseWrapper.Error(R.string.internet_not_available_for_listing_page))
+            else -> _userListLD.postValue(ResponseWrapper.Error(R.string.error_occurred))
+        }
     }
 
-    private val _userDetailsLD = MutableLiveData<UserDetailsResponse>()
+    private val userDetailsExceptionHandler = CoroutineExceptionHandler { _, t ->
+        when (t) {
+            is UnknownHostException -> _userDetailsLD.postValue(ResponseWrapper.Error(R.string.internet_not_available))
+            else -> _userDetailsLD.postValue(ResponseWrapper.Error(R.string.error_occurred))
+        }
+    }
 
-    val userListLD : LiveData<List<User>>
-    get() = repository.getUserList()
-    val userDetailsLD : LiveData<UserDetailsResponse>
+    private val _userDetailsLD = MutableLiveData<ResponseWrapper<UserDetailsResponse>>()
+    private val _userListLD = MediatorLiveData<ResponseWrapper<List<User>>>()
+
+    val userListLD : LiveData<ResponseWrapper<List<User>>>
+    get() = _userListLD
+    val userDetailsLD : LiveData<ResponseWrapper<UserDetailsResponse>>
     get() = _userDetailsLD
 
     init {
+        _userListLD.addSource(repository.getUserList()) {
+            _userListLD.value = ResponseWrapper.Success(it)
+        }
+        _userListLD.value = ResponseWrapper.Loading()
         fetchUserList()
     }
 
     private fun fetchUserList() {
-        viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
+        viewModelScope.launch(Dispatchers.IO + userListExceptionHandler) {
             repository.fetchUserList()
         }
     }
 
     fun fetchUserDetails(userId : String) {
-        viewModelScope.launch {
-            _userDetailsLD.postValue(repository.fetchUserDetails(userId))
+        _userDetailsLD.value = ResponseWrapper.Loading()
+        viewModelScope.launch(Dispatchers.IO + userDetailsExceptionHandler) {
+            val userDetails = repository.fetchUserDetails(userId)
+            userDetails?.let {
+                _userDetailsLD.postValue(ResponseWrapper.Success(it))
+            } ?: run {
+                _userDetailsLD.postValue(ResponseWrapper.Error(R.string.user_details_not_found))
+            }
+
         }
     }
 

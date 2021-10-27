@@ -24,7 +24,7 @@ object ApiClient {
         Retrofit.Builder()
             .client(httpClient)
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl("https://dummyapi.io/")
+            .baseUrl("https://dummyapi.io/data/v1/")
             .build()
     }
 

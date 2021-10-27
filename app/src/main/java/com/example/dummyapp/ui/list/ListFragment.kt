@@ -7,10 +7,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dummyapp.HomeViewModel
+import com.example.dummyapp.ResponseWrapper
 import com.example.dummyapp.databinding.ListFragmentBinding
 import com.example.dummyapp.db.User
 import java.lang.IllegalStateException
@@ -62,10 +64,53 @@ class ListFragment : Fragment() {
             }
         })
 
-        viewModel.userListLD.observe(viewLifecycleOwner, Observer {
-            adapter?.setUserList(it)
-            adapter?.notifyDataSetChanged()
+        viewModel.userListLD.observe(viewLifecycleOwner, Observer { response ->
+
+            when(response) {
+                is ResponseWrapper.Loading<*> -> {
+                    if (adapter?.itemCount == 0) {
+                        showOrHideProgressBar(true)
+                        showOrHideRecyclerView(false)
+                        showOrHideMessageBox(false)
+                    }
+                }
+
+                is ResponseWrapper.Success<*> -> {
+
+                    (response.data as? List<User>)?.takeIf { it.isNotEmpty() }?.let {
+                        showOrHideProgressBar(false)
+                        showOrHideRecyclerView(true)
+                        showOrHideMessageBox(false)
+                        adapter?.setUserList(it)
+                        adapter?.notifyDataSetChanged()
+                    }
+                }
+
+                is ResponseWrapper.Error -> {
+                    if (adapter?.itemCount == 0) {
+                        showOrHideProgressBar(false)
+                        showOrHideRecyclerView(false)
+                        showOrHideMessageBox(true,getString(response.stringId))
+                    } else {
+                        Toast.makeText(context,getString(response.stringId),Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
         })
+    }
+
+    private fun showOrHideProgressBar(toBeShown : Boolean) {
+        binding.userListProgressBar.visibility = if (toBeShown) View.VISIBLE else View.GONE
+    }
+
+    private fun showOrHideRecyclerView(toBeShown : Boolean) {
+        binding.recyclerView.visibility = if (toBeShown) View.VISIBLE else View.GONE
+    }
+
+    private fun showOrHideMessageBox(toBeShown: Boolean, message : String? = null){
+        binding.userListMessageBox.visibility = if (toBeShown) View.VISIBLE else View.GONE
+        message?.let { binding.userListMessageBox.text = it }
     }
 
     override fun onDetach() {
