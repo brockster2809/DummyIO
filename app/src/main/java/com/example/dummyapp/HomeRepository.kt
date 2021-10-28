@@ -7,17 +7,25 @@ import com.example.libdummyapi.models.UserDetailsResponse
 
 class HomeRepository(private val userDao : UserDao) {
 
-    private var currentPageNumber : Int = 0
+    private var lastPageFetched : Int = -1
     private var isNetworkCallOngoing = false
 
     fun getUserList() = userDao.getUsers()
 
-    suspend fun fetchUserList() {
+    suspend fun fetchUserList(totalItemCount: Int?) {
+        var userItemCount : Int? = totalItemCount
+        if (userItemCount == null) {
+            userItemCount = userDao.getTotalUsersCountInDB()
+        }
         if (isNetworkCallOngoing) return
+
+        val pageNumberToBeFetched = userItemCount / DEFAULT_PAGE_SIZE
+        if (pageNumberToBeFetched == lastPageFetched) return
+        lastPageFetched = pageNumberToBeFetched
         isNetworkCallOngoing = true
-        val response = ApiClient.api.getUserList(DEFAULT_PAGE_SIZE,currentPageNumber)
+
+        val response = ApiClient.api.getUserList(DEFAULT_PAGE_SIZE,lastPageFetched)
         response.body()?.let { userListResponse ->
-            currentPageNumber++
             userDao.insertAll(userListResponse.data.map { User(it.id,it.firstName, it.lastName, it.picture, it.title) })
         }
         isNetworkCallOngoing = false

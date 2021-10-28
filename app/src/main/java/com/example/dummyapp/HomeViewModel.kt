@@ -1,5 +1,6 @@
 package com.example.dummyapp
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.dummyapp.db.User
 import com.example.libdummyapi.models.UserDetailsResponse
@@ -40,9 +41,9 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
         fetchUserList()
     }
 
-    private fun fetchUserList() {
+    private fun fetchUserList(totalItemCount: Int? = null) {
         viewModelScope.launch(Dispatchers.IO + userListExceptionHandler) {
-            repository.fetchUserList()
+            repository.fetchUserList(totalItemCount)
         }
     }
 
@@ -62,7 +63,7 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
     fun onScrolled(totalItemCount: Int, visibleItemCount: Int, lastVisibleItemPosition: Int) {
         val shouldFetchMore = visibleItemCount + lastVisibleItemPosition + THRESHOLD >= totalItemCount
         if (shouldFetchMore) {
-            fetchUserList()
+            fetchUserList(totalItemCount)
         }
     }
 
